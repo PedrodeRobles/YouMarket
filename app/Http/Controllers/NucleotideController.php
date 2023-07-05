@@ -9,29 +9,19 @@ class NucleotideController extends Controller
 {
     public function checkNucleotide(Request $request)
     {
-        // Se obtiene la cadena de nucleótidos
-        $nucleotide = $request->nucleotide;
+        // Se obtiene la cadena de nucleótidos, se les quita los espacios y pone el texto todo en mayúscula
+        $nucleotide = strtoupper(str_replace(' ', '', $request->nucleotide));
 
         // Contabilizar caracteres del nucleótido (string)
         $total_characters = strlen($nucleotide);
 
-        // Se define el número de filas y columnas de una matriz. N*N de la matriz que queremos formar. Raiz cuadrada del número de $total_characters
-        $matrix_sides = sqrt($total_characters);
-        // return gettype($matrix_sides);
-
-        // Verifico si los lados de la matriz son valores entero y no flotantes. Ya que si es flotante no se podra realizar una matriz (según el enunciado por comodidad de utiliza N*N)
-        if ($matrix_sides == (int)$matrix_sides) {
-            $matrix_sides = (int)$matrix_sides;
-        }
+        // Se definen variable $matrix y $matrix_sides en el método para generar una matriz
+        list($matrix, $matrix_sides) = $this->generateMatrix($nucleotide, $total_characters);
 
         // En el caso de que los lados de la matriz sean flotantes no se podra seguir con el proceso
         if(is_float($matrix_sides)) {
-            return "No es posible realizar una matriz";
+            return "No es posible realizar una matriz con la cantidad de caracteres ingresados";
         }
-
-        // Se separan los nucleótidos en una matriz, según el número de filas y columnas definido anteriormente
-        $matrix = str_split($nucleotide, round($matrix_sides));
-        // return $matrix;
 
         //Arrays de los caracteres que se van a obtener de las diagonales de la matriz
         $first_diagonal = [];
@@ -60,7 +50,9 @@ class NucleotideController extends Controller
 
         // Se contabilizan los caracteres de cada Diagonal. Ejemplo ["G": 1, "U": 2]
         $first_diagonal_count_values = array_count_values($first_diagonal);
+        // return $first_diagonal_count_values;
         $second_diagonal_count_values = array_count_values($second_diagonal);
+        // return $second_diagonal_count_values;
 
         // Método que verifica si es mutante ó no el ARN. Retorna un boolean 
         $mutation = $this->countAndVerifyCharacters($first_diagonal_count_values);
@@ -84,10 +76,31 @@ class NucleotideController extends Controller
         }
     }
 
-    public function countAndVerifyCharacters($diagonal)
+    public function generateMatrix($nucleotide, $total_characters) : array 
+    {
+        // Se define el número de filas y columnas de una matriz. N*N de la matriz que queremos formar. Raiz cuadrada del número de $total_characters
+        $matrix_sides = sqrt($total_characters);
+
+        // Verifico si los lados de la matriz son valores enteros y no flotantes. Ya que si es flotante no se podra realizar una matriz (según el enunciado por comodidad de utiliza N*N)
+        if ($matrix_sides == (int)$matrix_sides) {
+            $matrix_sides = (int)$matrix_sides;
+        }
+
+        // En el caso de que los lados de la matriz sean flotantes no se podra seguir con el proceso
+        // if(is_float($matrix_sides)) {
+        //     return "No es posible realizar una matriz con la cantidad de caracteres ingresados";
+        // }
+
+        // Se separan los nucleótidos en una matriz, según el número de filas y columnas definido anteriormente. Ejemplo: "AUGAUCUCG" en 3 partes ($matrix_sides) -> ["AUG", "AUC", "UCG"]
+        $matrix = str_split($nucleotide, round($matrix_sides));
+
+        return array($matrix, $matrix_sides);
+    }
+
+    public function countAndVerifyCharacters($diagonal) : bool
     {
         // Se recorre cada caracter de $diagonal y si uno de ellos esta duplicado entonces se define que es mutante (return true), si no sucede la duplicación esta OK el ARN (return false)
-        foreach ($diagonal as $key => $value) {
+        foreach ($diagonal as $value) {
             if ($value === 2) {
                 return true;
             }
