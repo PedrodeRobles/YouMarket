@@ -18,7 +18,10 @@ class NucleotideController extends Controller
 
         // En el caso de que los lados de la matriz sean flotantes no se podra seguir con el proceso
         if(is_float($matrix_sides)) {
-            return "No es posible realizar una matriz con la cantidad de caracteres ingresados";
+            return response()->json([
+                "response" => "No es posible realizar una matriz con la cantidad de caracteres ingresados",
+                "status"   => 200
+            ]);
         }
 
         // Se generan las diagonales principales según la matriz
@@ -36,17 +39,23 @@ class NucleotideController extends Controller
             $mutation = $this->countAndVerifyCharacters($second_diagonal_count_values);
         }
 
-        // $newNucleotide = Nucleotide::create([
-        //     'nucleotide' => $request->nucleotide,
-        //     'mutation' => $request->mutation,
-        // ]);
-        // return $first_diagonal;
-        // return $second_diagonal;
+        // Se crea el nucleótido y se define si es ó no mutación en el campo 'mutation' según $mutation
+        Nucleotide::create([
+            'nucleotide' => $request->nucleotide,
+            'mutation' => $mutation,
+        ]);
 
+        // Se entrega respuesta al usuario
         if ($mutation) {
-            return "Es mutante";
+            return response()->json([
+                'response' => "El nucleótido: " . $nucleotide . " TIENE UNA MUTACIÓN",
+                'status'   => 200
+            ]);
         } else {
-            return "no es mutante";
+            return response()->json([
+                'response' => "El nucleótido: " . $nucleotide . " NO TIENE UNA MUTACIÓN",
+                'status'   => 200
+            ]);
         }
     }
 
@@ -103,7 +112,8 @@ class NucleotideController extends Controller
 
     public function countAndVerifyCharacters($diagonal) : bool
     {
-        // Se recorre cada caracter de $diagonal y si uno de ellos esta duplicado entonces se define que es mutante (return true), si no sucede la duplicación esta OK el ARN (return false)
+        // Se recorre cada caracter de $diagonal y si uno de ellos esta duplicado entonces se define que es mutante (return true),
+        // si no sucede la duplicación esta OK el ARN (return false)
         foreach ($diagonal as $value) {
             if ($value === 2) {
                 return true;
