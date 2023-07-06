@@ -49,12 +49,12 @@ class NucleotideController extends Controller
         if ($mutation) {
             return response()->json([
                 'response' => "El nucleótido: " . $nucleotide . " TIENE UNA MUTACIÓN",
-                'status'   => 200
+                'status'   => 201
             ]);
         } else {
             return response()->json([
                 'response' => "El nucleótido: " . $nucleotide . " NO TIENE UNA MUTACIÓN",
-                'status'   => 200
+                'status'   => 201
             ]);
         }
     }
