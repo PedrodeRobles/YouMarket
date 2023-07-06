@@ -122,4 +122,26 @@ class NucleotideController extends Controller
 
         return false;
     }
+
+    public function statistics()
+    {
+        // Obtengo el conteo de los casos mutantes registrados en la DB
+        $count_mutant_cases = Nucleotide::where('mutation', true)->count();
+
+        // Obtengo el conteo total de todos los casos registrados en la DB
+        $total_cases =  Nucleotide::all()->count();
+
+        // Hago regla de 3 simples. Casos mutantes * 100 porciento y el resultado dividio en casos totales
+        $mutant_percentage = ($count_mutant_cases * 100) / $total_cases;
+
+        // Al porcentaje anterior lo "fuerzo" a mostrar solo un decimal despues de la coma
+        $mutant_percentage = number_format($mutant_percentage, 1);
+
+        return response()->json([
+            'response'       => "Porcentaje de casos mutantes registrados: " . $mutant_percentage . "%",
+            'total_cases'    => $total_cases,
+            'mutation_cases' => $count_mutant_cases,
+            'status'         => 200
+        ]);
+    }
 }

@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/check-nucleotides', [NucleotideController::class, 'checkNucleotide']);
+Route::get('/statistics', [NucleotideController::class, 'statistics']);
