@@ -79,7 +79,7 @@ Caso de Prueba 2:
 ```
 - Resultado Esperado:
   - Estado de respuesta: 201 (OK)
-  - Cuerpo de respuesta: El nucleótido: CGTAGTACT NO IENE UNA MUTACIÓN 
+  - Cuerpo de respuesta: El nucleótido: CGTAGTACT NO TIENE UNA MUTACIÓN 
 
 
 Caso de Prueba 3:
@@ -107,7 +107,7 @@ Caso de Prueba 4:
 ```
 - Resultado Esperado:
   - Estado de respuesta: 201 (OK)
-  - Cuerpo de respuesta: El nucleótido: AUGAUCPUC NO IENE UNA MUTACIÓN 
+  - Cuerpo de respuesta: El nucleótido: AUGAUCPUC NO TIENE UNA MUTACIÓN 
 
 
 Caso de Prueba 5:
@@ -121,7 +121,7 @@ Caso de Prueba 5:
 ```
 - Resultado Esperado:
   - Estado de respuesta: 201 (OK)
-  - Cuerpo de respuesta: El nucleótido: !???!?&?= IENE UNA MUTACIÓN
+  - Cuerpo de respuesta: El nucleótido: !???!?&?= TIENE UNA MUTACIÓN
  
 
 Caso de Prueba 6:
@@ -135,4 +135,4 @@ Caso de Prueba 6:
 ```
 - Resultado Esperado:
   - Estado de respuesta: 201 (OK)
-  - Cuerpo de respuesta: El nucleótido: AUGAUCUCG IENE UNA MUTACIÓN
+  - Cuerpo de respuesta: El nucleótido: AUGAUCUCG TIENE UNA MUTACIÓN
