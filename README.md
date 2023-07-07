@@ -2,7 +2,7 @@
 
 ## Sobre el proyecto
 
-Se trata de una API que recive una cadenas de nucleótidos, esta diseñada para un laboratorio y su funciones son las siguientes:
+Se trata de una API que recibe una cadena de nucleótidos, esta diseñada para un laboratorio y su funciones son las siguientes:
 
 - Verificar si la cadena de nucleótidos se trata de una mutación o no
 - Almacenar información de las cadenas de nucleótidos ingresadas (solo si logran formar una matriz, ver casos de prueba)
