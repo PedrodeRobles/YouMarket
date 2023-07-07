@@ -20,7 +20,7 @@ class NucleotideController extends Controller
         if(is_float($matrix_sides)) {
             return response()->json([
                 "response" => "No es posible realizar una matriz con la cantidad de caracteres ingresados",
-                "status"   => 200
+                "status"   => 400
             ]);
         }
 
