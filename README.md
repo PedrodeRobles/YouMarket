@@ -1,66 +1,138 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Sobre el proyecto
 
-## About Laravel
+Se trata de una API que recive una cadenas de nucleótidos, esta diseñada para un laboratorio y su funciones son las siguientes:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Verificar si la cadena de nucleótidos se trata de una mutación o no
+- Almacenar información de las cadenas de nucleótidos ingresadas (solo si logran formar una matriz, ver casos de prueba)
+- Consultar y calcular estadisticas de casos mutantes, y no mutantes, historicos.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## EndPoints
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Endpoint: /check-nucleotide**
 
-## Learning Laravel
+Método: POST
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Descripción:
+Este endpoint se utiliza para verificar y analizar un nucleótido proporcionado. Se espera que el nucleótido sea enviado en el cuerpo de la solicitud en formato JSON con el siguiente parámetro:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Parámetros de la solicitud:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- nucleotide (string): El nucleótido a analizar.
 
-## Laravel Sponsors
+Requisitos y comportamiento:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- La raíz cuadrada de la cantidad de caracteres en el nucleótido debe ser un número entero (cuadrado perfecto) para poder formar una matriz. En caso contrario, el proceso terminará, no se registrará ningún resultado y se recibe un mensaje explicando el inconveniente.
+- Se verificará si hay caracteres repetidos en cualquier diagonal de la matriz generada. Si se encuentra un carácter repetido exactamente dos veces en cualquier diagonal, se considerará una mutación. Si no se cumple esta condición, se considerará normal. En ambos casos se almacenara el registro en la base de datos.
 
-### Premium Partners
+Respuesta:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- En caso de éxito, se devolverá un estado 201 (Creación) junto con un mensaje indicando si se trata de una mutación o no.
+- En caso de error, se devolverá un mensaje de error y el estado correspondiente.
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+**Endpoint: /statistics**
+Método: GET
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Descripción:
+Este endpoint se utiliza para obtener estadísticas basicas relacionadas con las mutaciones registradas en la base de datos.
 
-## Security Vulnerabilities
+Requisitos:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- No se requiere ningún parámetro en la solicitud.
 
-## License
+Respuesta:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Se devolverá un estado 200 (OK) junto con la siguiente información:
+  - Porcentaje de mutaciones registradas en la base de datos.
+  - Total de casos registrados en la base de datos.
+  - Total de casos mutantes registrados en la base de datos.
+
+
+
+### Casos de prueba
+
+Caso de Prueba 1:
+
+- Descripción: Cadena de ADN válida con repeticiones en diagonales.
+- Entrada:
+```
+{
+  "nucleotide": "AUGAUCUCG"
+}
+```
+- Resultado Esperado:
+  - Estado de respuesta: 201 (OK)
+  - Cuerpo de respuesta: El nucleótido: AUGAUCUCG TIENE UNA MUTACIÓN
+
+
+Caso de Prueba 2:
+
+- Descripción: Cadena de ADN válida sin repeticiones en diagonales.
+- Entrada:
+```
+{
+  "nucleotide": "CGTAGTACT"
+}
+```
+- Resultado Esperado:
+  - Estado de respuesta: 201 (OK)
+  - Cuerpo de respuesta: El nucleótido: CGTAGTACT NO IENE UNA MUTACIÓN 
+
+
+Caso de Prueba 3:
+
+- Descripción: Cadena de ADN inválida sin cuadrado perfecto para formar una matriz.
+- Entrada:
+```
+{
+  "nucleotide": "AUGAUCUC"
+}
+```
+- Resultado Esperado:
+  - Estado de respuesta: 400 (Bad Request)
+  - Cuerpo de respuesta: No es posible realizar una matriz con la cantidad de caracteres ingresados
+
+
+Caso de Prueba 4:
+
+- Descripción:  Cadena de ADN válida con espacios. Los espación se eliminan
+- Entrada:
+```
+{
+  "nucleotide": " AUGAU C P UC "
+}
+```
+- Resultado Esperado:
+  - Estado de respuesta: 201 (OK)
+  - Cuerpo de respuesta: El nucleótido: AUGAUCPUC NO IENE UNA MUTACIÓN 
+
+
+Caso de Prueba 5:
+
+- Descripción:  Cadena de ADN con caracteres especiales. Se consideran validas tambien
+- Entrada:
+```
+{
+  "nucleotide": "!???!?&?="
+}
+```
+- Resultado Esperado:
+  - Estado de respuesta: 201 (OK)
+  - Cuerpo de respuesta: El nucleótido: !???!?&?= IENE UNA MUTACIÓN
+ 
+
+Caso de Prueba 6:
+
+- Descripción:  Cadena de ADN con minúsculas. La minúsculas se transfroman en mayúsculas.
+- Entrada:
+```
+{
+  "nucleotide": "aUgAUCuCg"
+}
+```
+- Resultado Esperado:
+  - Estado de respuesta: 201 (OK)
+  - Cuerpo de respuesta: El nucleótido: AUGAUCUCG IENE UNA MUTACIÓN
